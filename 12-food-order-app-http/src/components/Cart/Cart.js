@@ -1,12 +1,15 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 import Modal from '../UI/Modal';
 import CartItem from './CartItem';
 import classes from './Cart.module.css';
 import CartContext from '../../store/cart-context';
+import Checkout from './Checkout';
 
 const Cart = (props) => {
   const cartCtx = useContext(CartContext);
+
+  const [isCheckout, setIsCheckout] = useState(false);
 
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
   const hasItems = cartCtx.items.length > 0;
@@ -17,6 +20,32 @@ const Cart = (props) => {
 
   const cartItemAddHandler = (item) => {
     cartCtx.addItem(item);
+  };
+
+  const orderHandler = () => {
+    setIsCheckout(true);
+  };
+
+  const submitOrderHandler = async (orderData) => {
+    const url =
+      'https://react-http-3ec4f-default-rtdb.firebaseio.com/ordered-meals.json';
+    const data = {
+      ...orderData,
+      meals: cartCtx.items,
+      totalAmount,
+    };
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      console.log(response.text());
+      return;
+    }
+    props.onClose();
   };
 
   const cartItems = (
@@ -34,6 +63,18 @@ const Cart = (props) => {
     </ul>
   );
 
+  const modalActions = (
+    <div className={classes.actions}>
+      <button className={classes['button--alt']} onClick={props.onClose}>
+        Close
+      </button>
+      {hasItems && (
+        <button className={classes.button} onClick={orderHandler}>
+          Order
+        </button>
+      )}
+    </div>
+  );
   return (
     <Modal onClose={props.onClose}>
       {cartItems}
@@ -41,12 +82,10 @@ const Cart = (props) => {
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
-      <div className={classes.actions}>
-        <button className={classes['button--alt']} onClick={props.onClose}>
-          Close
-        </button>
-        {hasItems && <button className={classes.button}>Order</button>}
-      </div>
+      {isCheckout && (
+        <Checkout onCancel={props.onClose} onOrder={submitOrderHandler} />
+      )}
+      {!isCheckout && modalActions}
     </Modal>
   );
 };
