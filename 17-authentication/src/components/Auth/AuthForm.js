@@ -4,7 +4,7 @@ import AuthContext from '../../store/auth-context';
 
 import classes from './AuthForm.module.css';
 
-export const API_KEY = 'AIzaSyBwEjyVLE-GAVMv7Tt5F8of14u7TNhmbNc';
+export const API_KEY = process.env.REACT_APP_API_KEY;
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
