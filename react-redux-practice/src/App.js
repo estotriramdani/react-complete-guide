@@ -2,19 +2,17 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import logo from './logo.svg';
 import './App.css';
-import { ACTION_TYPES } from './store';
+import { counterActions } from './store/counter-slice';
 
 function App() {
-  const count = useSelector((state) => state.count);
+  const count = useSelector((state) => state.counter.count);
+  console.log(count);
   const dispatch = useDispatch();
   const handleIncrement = () => {
-    dispatch({ type: ACTION_TYPES.INCREMENT });
+    dispatch(counterActions.inc({ value: 10 }));
   };
   const handleDecrement = () => {
-    dispatch({ type: ACTION_TYPES.DECREMENT });
-  };
-  const handleByValue = () => {
-    dispatch({ type: ACTION_TYPES.DEC_VALUE, payload: { value: 9 } });
+    dispatch(counterActions.dec({ value: 14 }));
   };
   return (
     <div className="App">
@@ -29,9 +27,8 @@ function App() {
         >
           Learn React
         </a>
-        <button onClick={handleDecrement}>-</button>
-        <button onClick={handleIncrement}>+</button>
-        <button onClick={handleByValue}>9</button>
+        <button onClick={handleDecrement}>-10</button>
+        <button onClick={handleIncrement}>+14</button>
       </header>
     </div>
   );
