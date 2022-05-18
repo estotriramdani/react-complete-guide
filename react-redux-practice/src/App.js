@@ -25,7 +25,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Learn More
         </a>
         <button onClick={handleDecrement}>-10</button>
         <button onClick={handleIncrement}>+14</button>
